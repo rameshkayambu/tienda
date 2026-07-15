@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIENDA - Mobile Phones, TVs, Laptops, and Tablets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body {
+        font-family: 'Inter', 'Noto Sans Sinhala', 'Noto Sans Tamil', sans-serif;
+        background-color: #f3f4f6;
+    }
+    @media (max-width: 767px) {
+        .sidebar-mobile {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            z-index: 100;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+        }
+        .sidebar-open {
+            transform: translateX(0);
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 90;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+    }
+#imageModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    overflow: auto;
+}
+#imageModal img {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+}
+</style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <header class="bg-white shadow-sm py-4 sticky top-0 z-50">
+        <div class="container mx-auto px-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <button id="menu-btn" class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2 bg-gray-100">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <a href="#" class="flex-shrink-0">
+                    <img src="images/Tienda-Logo.png" alt="TIENDA Brand Logo" class="h-10 sm:h-12 w-auto">
+                </a>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="https://wa.me/768046148" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <i class="fab fa-whatsapp text-lg mr-2"></i>
+                    <span>+94 76 804 6148</span>
+                </a>
+                <a href="tel:723999000" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <i class="fas fa-phone-alt text-lg mr-2"></i>
+                    <span>+94 723 999 000</span>
+                </a>
+            </div>
+
+            <div class="relative w-full max-w-sm ml-4 hidden md:block">
+                <input type="text" id="search-input-desktop" placeholder="Search for Products" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-blue-500 focus:border-blue-500">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+        <div class="md:hidden px-4 mt-4">
+            <div class="relative w-full">
+                <input type="text" id="search-input-mobile" placeholder="Search for Products" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
+        
+        <aside id="sidebar" class="sidebar-mobile bg-white p-6 w-full md:w-1/4 max-w-xs md:sticky md:top-24 h-full md:h-[calc(100vh-10rem)] overflow-y-auto md:block md:rounded-lg md:shadow-lg">
+            <div class="flex justify-between items-center md:hidden mb-6">
+                <h3 class="text-xl font-bold">Menu</h3>
+                <button id="close-menu-btn" class="p-2 text-gray-600 focus:outline-none">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 hidden md:block">Products</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="category-link block p-2 rounded-md hover:bg-gray-200" data-category="mobile">Mobile Phones</a></li>
+                        <li><a href="#" class="category-link block p-2 rounded-md hover:bg-gray-200" data-category="tv">TV</a></li>
+                        <li><a href="#" class="category-link block p-2 rounded-md hover:bg-gray-200" data-category="laptop">Laptop</a></li>
+                        <li><a href="#" class="category-link block p-2 rounded-md hover:bg-gray-200" data-category="tab">Tablet</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-xl font-bold">Filter</h3>
+                        <button id="clear-filters" class="text-sm text-blue-600 hover:text-blue-800">Clear All</button>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <label for="down-payment-slider" class="block text-sm font-medium mb-2">Down payment (LKR)</label>
+                        <input type="range" id="down-payment-slider" min="10000" max="100000" value="100000" class="w-full">
+                        <div class="flex justify-between text-xs mt-2 text-gray-600">
+                            <span id="min-down-payment">Rs. 10,000</span>
+                            <span id="max-down-payment">Rs. 100,000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="w-full md:w-3/4 space-y-6">
+            <div class="w-full rounded-lg shadow-md overflow-hidden">
+                <img src="images/banner-1.png" alt="TIENDA Promotional Banner" class="w-full h-auto object-cover">
+            </div>
+
+            <div id="product-container" class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
+                    <h2 id="current-category-title" class="text-2xl font-bold text-gray-900 mb-2 sm:mb-0">All Products</h2>
+                    <ul id="brand-filters" class="flex flex-wrap gap-2 text-sm text-gray-600"></ul>
+                </div>
+                <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </div>
+        </section>
+    </main>
+    
+<section id="application-form" class="container mx-auto p-4 sm:p-8">
+  <div class="bg-white rounded-lg shadow-lg p-6 sm:p-8 mb-12">
+    <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Application Form / අයදුම් පත්‍රය / விண்ணப்ப படிவம்.</h2>
+    
+    <div id="selected-product-alert" class="hidden mb-6 p-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-md font-semibold text-center">
+        Selected Product: <span id="selected-product-text"></span>
+    </div>
+
+    <form id="emiForm" name="emi-application" class="space-y-6" onsubmit="return handleEmiSubmit(event);">
+      <input type="hidden" id="selected_product_details" value="">
+
+      <div class="space-y-4">
+        <h3 class="text-xl font-semibold text-gray-700">Personal Information</h3>
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">සම්පූර්ණ නම முழுப் பெயர்</label>
+          <input type="text" id="name" required class="w-full px-4 py-2 border border-gray-300 rounded-md">
+        </div>
+        <div>
+          <label for="perm_address" class="block text-sm font-medium text-gray-700 mb-1">ස්ථිර ලිපිනය நிரந்தர முகவரி</label>
+          <textarea id="perm_address" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-md"></textarea>
+        </div>
+        <div>
+          <label for="curr_address" class="block text-sm font-medium text-gray-700 mb-1">වර්තමාන ලිපිනය தற்போதைய முகவரி</label>
+          <textarea id="curr_address" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-md"></textarea>
+        </div>
+        <div>
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">ජංගම දුරකථන අංකය கைபேசி எண்</label>
+          <input type="tel" id="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-md">
+        </div>
+        <div>
+          <label for="whatsapp_phone" class="block text-sm font-medium text-gray-700 mb-1">Whatsapp අංකය Whatsapp எண்</label>
+          <input type="tel" id="whatsapp_phone" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-xl font-semibold text-gray-700">Employment Information</h3>
+        <div>
+          <label for="work-place" class="block text-sm font-medium text-gray-700 mb-1">රැකියා ස්ථානයේ නම வேலை செய்யும் இடம்</label>
+          <input type="text" id="work-place" required class="w-full px-4 py-2 border border-gray-300 rounded-md">
+        </div>
+        <div>
+          <label for="work-address" class="block text-sm font-medium text-gray-700 mb-1">රැකියා ස්ථානයේ ලිපිනය வேலை செய்யும் இடத்தின் முகவரி</label>
+          <textarea id="work-address" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-md"></textarea>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-xl font-semibold text-gray-700">Reference</h3>
+        <div>
+          <label for="ref_name" class="block text-sm font-medium text-gray-700 mb-1">පවුලේ සාමාජිකයෙකුගේ නම குடும்ப உறுப்பினர் ஒருவரின் பெயர்</label>
+          <input type="text" id="ref_name" required class="w-full px-4 py-2 border border-gray-300 rounded-md">
+        </div>
+        <div>
+          <label for="ref_phone" class="block text-sm font-medium text-gray-700 mb-1">ඔහුගේ හෝ ඇයගේ දුරකථන අංකය அவரது தொலைபேசி எண்</label>
+          <input type="tel" id="ref_phone" required class="w-full px-4 py-2 border border-gray-300 rounded-md">
+        </div>
+      </div>
+
+      <div class="text-center pt-4">
+        <button id="emi-submit" type="submit" class="w-full sm:w-auto bg-blue-600 text-white font-bold py-3 px-12 rounded-full shadow-lg hover:bg-blue-700">Submit Application</button>
+      </div>
+    </form>
+  </div>
+  
+  <div id="thankYouModal" class="fixed inset-0 z-50 items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative bg-white rounded-lg shadow-lg max-w-lg mx-4 p-6 text-center">
+      <h3 class="text-2xl font-bold mb-2">Thank you for submitting the application</h3>
+      <p class="mb-4">Please send us the required documents on WhatsApp so we can process your application faster.</p>
+      <a id="waLink" href="https://wa.me/94768046148?text=I%20have%20submitted%20my%20EMI%20application.%20Here%20are%20my%20documents." target="_blank" class="inline-block bg-green-500 text-white font-semibold py-2 px-4 rounded-lg mr-2">Send documents on WhatsApp</a>
+      <button onclick="closeThankYouModal()" class="inline-block bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">Close</button>
+    </div>
+  </div>
+</section>
+
+    <section id="payment-section" class="container mx-auto p-4 sm:p-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 sm:p-8">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Monthly Instalment Payments</h2>
+            <div class="space-y-6 text-center max-w-2xl mx-auto">
+                <p class="text-lg text-red-600 font-semibold">ප්‍රමාද ගාස්තුවක් වළක්වා ගැනීම සඳහා, කරුණாකර නියමිත දිනට පෙර හෝ එදිනම පහත සඳහන් බැංකු ගිණුමට ඔබගේ වාරික මුදල ගෙවන්න.தாமதக் கட்டணத்தைத் தவிர்க்க, தயவுசெய்து உங்கள் தவணைத் தொகையை கீழே குறிப்பிடப்பட்டுள்ள வங்கி கணக்கிற்கு, கடைசி செலுத்தும் தேதிக்குள் அல்லது அதற்கு முன் செலுத்தவும்.</p>
+                <div class="bg-gray-100 rounded-lg p-6 space-y-4">
+                    <div class="text-left">
+                        <p class="text-gray-800"><strong class="text-blue-600">Company Name:</strong> AA CAPITAL SOLUTION PVT LTD</p>
+                        <p class="text-gray-800"><strong class="text-blue-600">Bank:</strong> BOC, Dematagoda</p>
+                        <p class="text-gray-800"><strong class="text-blue-600">Account:</strong> 93004849</p>
+                    </div>
+                    <hr class="border-t border-gray-300">
+                    <div class="text-left">
+                        <p class="text-gray-800"><strong class="text-blue-600">Company Name:</strong> AA CAPITAL SOLUTION PVT LTD</p>
+                        <p class="text-gray-800"><strong class="text-blue-600">Bank:</strong> Cargills Bank, Old Moor Street</p>
+                        <p class="text-gray-800"><strong class="text-blue-600">Account:</strong> 003103000110</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 max-w-lg mx-auto text-center">
+                <h3 class="text-2xl font-bold mb-6">Upload Payment Proof</h3>
+                <p class="text-sm font-medium text-gray-700 mb-6">
+                    ඔබගේ ගෙවීම් සනාථ කිරීමේ ලේඛනය (Payment Proof) යැවීමට, පහත ඇති WhatsApp බොත්තම ඔබන්න.<br>
+                    உங்கள் பேமெண்ட் ப்ரூஃப் (Payment Proof) அனுப்ப கீழே உள்ள WhatsApp பட்டனை அழுத்தவும்.
+                </p>
+                
+                <div class="flex justify-center">
+                    <a href="https://wa.me/94769619262?text=%E0%AE%B5%E0%AE%A3%E0%AE%95%E0%AF%8D%E0%AE%95%E0%AE%AE%E0%AF%8D!%20%E0%AE%8E%E0%AE%A9%E0%AE%A4%E0%AF%81%20%E0%AE%AA%E0%AF%86%E0%AE%AF%E0%AE%B0%E0%AF%8D%3A%20%0A%E0%AE%AE%E0%AF%8A%E0%AE%AA%E0%AF%83%E0%AE%B2%E0%AF%8D%20%E0%AE%8E%E0%AE%A3%E0%AF%8D%3A%20%0A%0A%E0%AE%A4%E0%AE%AF%E0%AE%B5%E0%AF%81%E0%AE%9A%E0%AF%86%E0%AF%8D%E0%AE%AF%E0%AF%8D%E0%AE%A4%E0%AF%81%20%E0%AE%8E%E0%AE%A9%E0%AE%A4%E0%AF%81%20%E0%AE%AA%E0%AF%86%E0%AE%AF%E0%AE%B0%E0%AF%8D%20%E0%AE%AA%E0%AF%8D%E0%AE%B0%E0%AF%82%E0%AE%AB%E0%AF%8D%20%E0%AE%AE%E0%AE%B1%E0%AF%8D%E0%AE%B1%E0%AF%81%E0%AE%AE%E0%AF%8D%20%E0%AE%AE%E0%AF%8A%E0%AE%AA%E0%AF%83%E0%AE%B2%E0%AF%8D%20%E0%AE%8E%E0%AE%A3%E0%AF%8D%20%E0%AE%9 Code" 
+                       target="_blank" 
+                       class="inline-flex items-center bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-600 transition-all transform hover:scale-105">
+                        <i class="fab fa-whatsapp text-xl mr-2"></i> WhatsApp 
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-gray-300 py-8 px-4 sm:px-8 mt-8">
+        <div class="container mx-auto text-center">
+            <div class="flex flex-col items-center justify-center">
+                <img src="images/Tienda-Logo.png" alt="TIENDA Brand Logo" class="h-10 w-auto mb-2">
+                <h3 class="text-sm font-bold text-white mb-2">UPGRADE YOUR LIFE</h3>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
+                <a href="https://wa.me/768046148" class="flex items-center hover:text-white transition-colors">
+                    <i class="fab fa-whatsapp mr-2"></i><span>+94 76 804 6148</span>
+                </a>
+                <a href="tel:723999000" class="flex items-center hover:text-white transition-colors">
+                    <i class="fas fa-phone-alt mr-2"></i><span>+94 723 999 000</span>
+                </a>
+                <a href="mailto:info@tiendaaacs.com" class="flex items-center hover:text-white transition-colors">
+                    <i class="fas fa-envelope mr-2"></i><span>info@tiendaaacs.com</span>
+                </a>
+            </div>
+            <p class="text-xs mt-6">© 2024 AA Capital Solution Pvt Ltd. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let allProductsData = [];
+        let filteredProducts = [];
+        let currentCategory = 'mobile';
+        let currentBrand = 'all';
+        let maxDownPayment = 100000;
+
+const productsData = [
+    { category: "mobile", brand: "Blackview", model: "Wave 7C", specs: "4-64", imageUrl: "images/Blackview-Wave-7C-4-64.jpg", downPayment: 14000 },
+    { category: "mobile", brand: "Blackview", model: "Wave 7C", specs: "4-128", imageUrl: "images/Blackview-Wave-7C-4-128.jpg", downPayment: 15500 },
+    { category: "tab", brand: "Blackview", model: "Mage 2", specs: "12+24-256", imageUrl: "images/Blackview-Mage-2-Tab-12+24-256.jpg", downPayment: 38500 },
+    { category: "mobile", brand: "Coolpad", model: "C16", specs: "4-128", imageUrl: "images/Coolpad-C16-4-128.jpg", downPayment: 14000 },
+    { category: "tab", brand: "Greentel", model: "A9Pro", specs: "4-64", imageUrl: "images/Greentel-A9Pro-4-64.jpg", downPayment: 15000 },
+    { category: "tab", brand: "Greentel", model: "A10Pro", specs: "4-128", imageUrl: "images/Greentel-A10Pro-4-128.jpg", downPayment: 24000 },
+    { category: "mobile", brand: "HMD", model: "Fusion 5G", specs: "8+8-256", imageUrl: "images/HMD-Fusion-5G-8+8-256-.jpg", downPayment: 20000 },
+    { category: "mobile", brand: "Honor", model: "Play 10", specs: "3-64", imageUrl: "images/Honor-Play-10-3-64.jpg", downPayment: 12000 },
+    { category: "mobile", brand: "Honor", model: "Play 10", specs: "4-128", imageUrl: "images/Honor-Play-10-4-128.jpg", downPayment: 15000 },
+    { category: "mobile", brand: "Honor", model: "X5C Plus", specs: "4-128", imageUrl: "images/Honor-X5C-Plus-4-128.jpg", downPayment: 17000 },
+    { category: "tab", brand: "Honor", model: "pad X7", specs: "4-128", imageUrl: "images/Honor-pad-X7-4-128.jpg", downPayment: 18500 },
+    { category: "mobile", brand: "Honor", model: "X6C", specs: "6-128", imageUrl: "images/Honor-X6C-6-128.jpg", downPayment: 19500 },
+    { category: "mobile", brand: "Honor", model: "X7d", specs: "8-256", imageUrl: "images/Honor-X7d-8-256.jpg", downPayment: 29500 },
+    { category: "mobile", brand: "Honor", model: "X7d (5G)", specs: "8-256", imageUrl: "images/Honor-X7d-(5G)-8-256.jpg", downPayment: 30000 },
+    { category: "mobile", brand: "Honor", model: "X8d", specs: "8-256", imageUrl: "images/Honor-600-Lite-8-256.jpg", downPayment: 50500 },
+    { category: "mobile", brand: "Honor", model: "600 Lite", specs: "8-256", imageUrl: "images/Honor-X8d-8-256.jpg", downPayment: 56000 },
+    { category: "mobile", brand: "Infinix", model: "Smart 10 Plus", specs: "4+4-128", imageUrl: "images/Infinix-Smart-10-Plus-4+4-128.jpg", downPayment: 16500 },
+    { category: "mobile", brand: "Infinix", model: "Smart 20", specs: "4+4-64", imageUrl: "images/Infinix-Smart-20-4+4-64.jpg", downPayment: 17000 },
+    { category: "mobile", brand: "Infinix", model: "Smart 20", specs: "4+4-128", imageUrl: "images/Infinix-Smart-20-4+4-128.jpg", downPayment: 18000 },
+    { category: "mobile", brand: "Infinix", model: "Hot 60i", specs: "6+6-128", imageUrl: "images/Infinix-Hot-60i-6+6-128.jpg", downPayment: 20000 },
+    { category: "mobile", brand: "Infinix", model: "Hot 70", specs: "4+4-128", imageUrl: "images/Infinix-Hot-70-4+4-128.jpg", downPayment: 27000 },
+    { category: "mobile", brand: "Infinix", model: "Hot 60 pro", specs: "8+8-256", imageUrl: "images/Infinix-Hot-60-Pro-8+8-256.jpg", downPayment: 29000 },
+    { category: "mobile", brand: "Infinix", model: "Hot 70", specs: "6+6-128", imageUrl: "images/Infinix-Hot-70-6+6-128.jpg", downPayment: 33000 },
+    { category: "mobile", brand: "Infinix", model: "Hot 60 Pro Plus", specs: "8+8-256", imageUrl: "images/Infinix-Hot-60-Pro-Plus-8+8-256.jpg", downPayment: 33500 },
+    { category: "mobile", brand: "Infinix", model: "Note 50", specs: "8+8-256", imageUrl: "images/Infinix-Note-50-8+8-256.jpg", downPayment: 38000 },
+    { category: "mobile", brand: "Infinix", model: "Note 60", specs: "8+8-256", imageUrl: "images/Infinix-Note-60-8+8-256.jpg", downPayment: 55500 },
+    { category: "mobile", brand: "Infinix", model: "Note 60 Pro", specs: "8+8-256", imageUrl: "images/Infinix-Note-60-Pro-8+8-256.jpg", downPayment: 62000 },
+    { category: "mobile", brand: "Oscal", model: "Flat 2C", specs: "3+6-64", imageUrl: "images/Oscal-Flat-2C-3+6-64.jpg", downPayment: 11500 },
+    { category: "tab", brand: "Oscal", model: "Pad 9", specs: "4+12-128", imageUrl: "images/Oscal-Pad-9-4+12-128.jpg", downPayment: 18000 },
+    { category: "mobile", brand: "Realme", model: "C75X", specs: "8+8-128", imageUrl: "images/Realme-C75x-8+8-128.jpg", downPayment: 20000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "F07", specs: "4-64", imageUrl: "images/Samsung-Galaxy-F07-4-64.jpg", downPayment: 15000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A07", specs: "4-64", imageUrl: "images/Samsung-Galaxy-A07-4-64.jpg", downPayment: 15500 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A07", specs: "4-128", imageUrl: "images/Samsung-Galaxy-A07-4-128.jpg", downPayment: 19000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A07", specs: "6-128", imageUrl: "images/Samsung-Galaxy-A07-6-128.jpg", downPayment: 25000 },
+    { category: "tab", brand: "Samsung Galaxy", model: "A11", specs: "4-64", imageUrl: "images/Samsung-Galaxy-A11-Tab-4-64.jpg", downPayment: 27000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "M17 (5G)", specs: "6-128", imageUrl: "images/Samsung-Galaxy-M17-5G-6-128.jpg", downPayment: 32000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A17", specs: "8-128", imageUrl: "images/Samsung-Galaxy-A17-8-128.jpg", downPayment: 37500 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A17", specs: "8-256", imageUrl: "images/Samsung-Galaxy-A17-8-256.jpg", downPayment: 44000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A26 5g", specs: "8-256", imageUrl: "images/Samsung-Galaxy-A26-5g-8-256.jpg", downPayment: 49000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A37 5G", specs: "8-256", imageUrl: "images/Samsung-Galaxy-A37-5G-8-256.jpg", downPayment: 78000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A37 5G", specs: "12-256", imageUrl: "images/Samsung-Galaxy-A37-5G-12-256.jpg", downPayment: 89000 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A57 5G", specs: "8-256", imageUrl: "images/Samsung-Galaxy-A57-5G-8-256.jpg", downPayment: 89500 },
+    { category: "mobile", brand: "Samsung Galaxy", model: "A57 5G", specs: "12-256", imageUrl: "images/Samsung-Galaxy-A57-5G-12-256.jpg", downPayment: 98500 },
+    { category: "mobile", brand: "Softlogic", model: "MaxAiPlus 6", specs: "6+128", imageUrl: "images/Softlogic-MaxAiPlus-6-6+128.jpg", downPayment: 14000 },
+    { category: "mobile", brand: "Softlogic", model: "MaxAiPlus 6", specs: "8+128", imageUrl: "images/Softlogic-MaxAiPlus-6-8+128.jpg", downPayment: 15500 },
+    { category: "mobile", brand: "Tecno", model: "Spark Go 3", specs: "4+4-64", imageUrl: "images/Tecno-Spark-Go-3-4+4-64.jpg", downPayment: 15500 },
+    { category: "mobile", brand: "Tecno", model: "Spark Go 3", specs: "4+4-128", imageUrl: "images/Tecno-Spark-Go-3-4+4-128.jpg", downPayment: 16500 },
+    { category: "mobile", brand: "Tecno", model: "Spark 40", specs: "6+6-128", imageUrl: "images/Tecno-Spark-40-6+6-128.jpg", downPayment: 18000 },
+    { category: "mobile", brand: "Tecno", model: "Camon 40", specs: "8+8-256", imageUrl: "images/Tecno-Camon-40-8+8-256.jpg", downPayment: 27000 },
+    { category: "mobile", brand: "Tecno", model: "Spark 40 Pro", specs: "8-256", imageUrl: "images/Tecno-Spark-40-pro-8-256.jpg", downPayment: 27000 },
+    { category: "mobile", brand: "Tecno", model: "Spark 40 Pro Plus", specs: "8-256", imageUrl: "images/Tecno-Spark-40-pro-plus-8-256.jpg", downPayment: 31500 },
+    { category: "mobile", brand: "Vivo", model: "Y04", specs: "4-64", imageUrl: "images/Vivo-Y04-4-64.jpg", downPayment: 14500 },
+    { category: "mobile", brand: "Xiaomi", model: "A5", specs: "4-128", imageUrl: "images/Xiaomi-Redmi-A5-4-128.jpg", downPayment: 14500 },
+    { category: "mobile", brand: "Xiaomi", model: "15C", specs: "4-128", imageUrl: "images/Xiaomi-Redmi-15C-4-128.jpg", downPayment: 18500 },
+    { category: "mobile", brand: "Xiaomi", model: "15C", specs: "6-128", imageUrl: "images/Xiaomi-Redmi-15C-6-128.jpg", downPayment: 19500 },
+    { category: "mobile", brand: "Xiaomi", model: "15C", specs: "8-256", imageUrl: "images/Xiaomi-Redmi-15C-8-256.jpg", downPayment: 28000 },
+    { category: "mobile", brand: "Xiaomi", model: "Note 15", specs: "8-256", imageUrl: "images/Xiaomi-Redmi-Note-15-8-256.jpg", downPayment: 37000 },
+    { category: "mobile", brand: "Xiaomi", model: "Note 15 Pro Plus (5G)", specs: "8-256", imageUrl: "images/Xiaomi-Redmi-Note-15-pro-plus-5g-8-256.jpg", downPayment: 59500 },
+    { category: "mobile", brand: "Xiaomi", model: "Note 14 Pro Plus (5G)", specs: "12-512", imageUrl: "images/Xiaomi-Redmi-Note-14-pro-plus-5g-12-512.jpg", downPayment: 62500 },
+    { category: "mobile", brand: "ZTE", model: "Blade A36e", specs: "2+4-64", imageUrl: "images/ZTE-Blade-A36e-2+4-64.jpg", downPayment: 11500 },
+    { category: "mobile", brand: "ZTE", model: "Blade A56", specs: "4+4-64", imageUrl: "images/ZTE-Blade-A56-4+4-64.jpg", downPayment: 13000 },
+    { category: "mobile", brand: "ZTE", model: "Blade A76", specs: "4+4-128", imageUrl: "images/ZTE-Blade-A76-4+4-128.jpg", downPayment: 15000 },
+    { category: "mobile", brand: "ZTE", model: "Blade A56", specs: "4+4-128", imageUrl: "images/ZTE-Blade-A56-4+4-128.jpg", downPayment: 15500 },
+    { category: "mobile", brand: "ZTE", model: "V80 Plus", specs: "4+4-128", imageUrl: "images/ZTE-V80-Plus-4+4-128.jpg", downPayment: 15500 },
+    { category: "mobile", brand: "ZTE", model: "V80 Plus", specs: "8+8-128", imageUrl: "images/ZTE-V80-Plus-8+8-128.jpg", downPayment: 17000 },
+    { category: "mobile", brand: "ZTE", model: "Nubia V80 Design", specs: "8-256", imageUrl: "images/ZTE-Nubia-V80-Design-8-256.jpg", downPayment: 25000 }
+];
+
+        const productListings = document.getElementById('product-list');
+        const categoryLinks = document.querySelectorAll('.category-link');
+        const currentCategoryTitle = document.getElementById('current-category-title');
+        const brandFiltersContainer = document.getElementById('brand-filters');
+        const searchInputDesktop = document.getElementById('search-input-desktop');
+        const searchInputMobile = document.getElementById('search-input-mobile');
+        
+        const menuBtn = document.getElementById('menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        
+        const downPaymentSlider = document.getElementById('down-payment-slider');
+        const minDownPaymentSpan = document.getElementById('min-down-payment');
+        const maxDownPaymentSpan = document.getElementById('max-down-payment');
+        const clearFiltersBtn = document.getElementById('clear-filters');
+
+        allProductsData = productsData;
+        filterProducts();
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('sidebar-open');
+            sidebarOverlay.classList.toggle('active');
+        }
+
+        menuBtn.addEventListener('click', toggleSidebar);
+        closeMenuBtn.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentCategory = e.target.dataset.category;
+                currentBrand = 'all';
+                filterProducts();
+                updateCategoryTitle();
+                updateBrandFilters();
+
+                if (window.innerWidth < 768) {
+                    toggleSidebar();
+                }
+
+                document.getElementById('product-container').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+
+        searchInputDesktop.addEventListener('input', (e) => filterProducts(e.target.value));
+        searchInputMobile.addEventListener('input', (e) => filterProducts(e.target.value));
+        
+        downPaymentSlider.addEventListener('input', (e) => {
+            maxDownPayment = parseInt(e.target.value);
+            minDownPaymentSpan.textContent = `Rs. 10,000`;
+            maxDownPaymentSpan.textContent = `Rs. ${maxDownPayment.toLocaleString()}`;
+            filterProducts();
+        });
+
+        clearFiltersBtn.addEventListener('click', () => {
+            currentCategory = 'mobile';
+            currentBrand = 'all';
+            maxDownPayment = 100000;
+            downPaymentSlider.value = 100000;
+            searchInputDesktop.value = '';
+            searchInputMobile.value = '';
+            filterProducts();
+            updateCategoryTitle();
+            updateBrandFilters();
+            minDownPaymentSpan.textContent = `Rs. 10,000`;
+            maxDownPaymentSpan.textContent = `Rs. 100,000`;
+            if (window.innerWidth < 768) toggleSidebar();
+        });
+
+// HTML-இல் உள்ள இந்த செயல்பாட்டை மட்டும் மாற்றவும்:
+window.selectProductForEmi = function(brand, model, specs, downPayment) {
+    const productString = `${brand} ${model} (${specs}) with a down payment of Rs. ${downPayment.toLocaleString()}`;
+    
+    // 1. மறைமுக உள்ளீட்டுப் புலத்திற்கு (Hidden Input) மதிப்பை அனுப்புகிறது:
+    document.getElementById('selected_product_details').value = productString;
+    
+    // 2. படிவத்தின் மேலே வாடிக்கையாளருக்குக் காட்டும் அலர்ட்:
+    const alertBox = document.getElementById('selected-product-alert');
+    const alertText = document.getElementById('selected-product-text');
+    alertText.textContent = productString;
+    alertBox.classList.remove('hidden');
+
+    // 3. மெதுவாக படிவத்திற்கு நகர்த்தும் (Scroll):
+    document.getElementById('application-form').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+    });
+};
+        function createProductCard(product) {
+            const whatsappMessage = encodeURIComponent(`Hi, I'm interested in the ${product.brand} ${product.model} (${product.specs}) with a down payment of Rs. ${product.downPayment.toLocaleString()}. Please tell me more.`);
+            const card = document.createElement('div');
+            card.className = 'bg-gray-50 rounded-lg shadow-md p-4 border border-gray-200 transform transition-transform duration-300 hover:scale-103';
+            card.innerHTML = `
+                <img src="${product.imageUrl}" alt="${product.model}" class="w-full max-h-64 object-contain mb-4 rounded-md cursor-pointer" onclick="openModal('${product.imageUrl}')">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">${product.brand} ${product.model} <span class="text-sm font-normal text-gray-500">${product.specs}</span></h3>
+                <div class="bg-blue-50 rounded-lg p-2 mb-2">
+                    <p class="text-sm font-semibold text-blue-700">Down Payment: Rs. ${product.downPayment.toLocaleString()}</p>
+                </div>
+                <div class="mt-4 flex flex-col sm:flex-row items-center justify-center gap-2">
+                    <button onclick="selectProductForEmi('${product.brand}', '${product.model}', '${product.specs}', ${product.downPayment})" class="w-full sm:w-auto text-center bg-blue-600 text-white font-semibold py-1 px-3 rounded-full shadow hover:bg-blue-700 text-sm">Apply Now</button>
+                    <a href="https://wa.me/768046148?text=${whatsappMessage}" class="w-full sm:w-auto text-center bg-green-500 text-white font-semibold py-1 px-3 rounded-full shadow hover:bg-green-600 text-sm"><i class="fab fa-whatsapp mr-1"></i> WhatsApp</a>
+                </div>
+            `;
+            return card;
+        }
+
+        function renderProducts(products) {
+            productListings.innerHTML = '';
+            if (products.length === 0) {
+                productListings.innerHTML = '<p class="text-center text-gray-600 col-span-full">No products found matching your criteria.</p>';
+                return;
+            }
+            products.forEach(product => {
+                productListings.appendChild(createProductCard(product));
+            });
+        }
+
+        function filterProducts(searchTerm = '') {
+            searchTerm = searchTerm.toLowerCase();
+            filteredProducts = allProductsData.filter(product => {
+                const matchesCategory = currentCategory === 'all' || product.category.toLowerCase() === currentCategory;
+                const matchesBrand = currentBrand === 'all' || product.brand.toLowerCase() === currentBrand;
+                const matchesDownPayment = product.downPayment <= maxDownPayment;
+                const matchesSearch = searchTerm === '' ||
+                                      product.model.toLowerCase().includes(searchTerm) ||
+                                      product.brand.toLowerCase().includes(searchTerm) ||
+                                      product.specs.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesBrand && matchesDownPayment && matchesSearch;
+            });
+            filteredProducts.sort((a, b) => a.downPayment - b.downPayment);
+            renderProducts(filteredProducts);
+        }
+
+        function updateCategoryTitle() {
+            currentCategoryTitle.textContent = currentCategory === 'all' ? 'All Products' :
+                                               currentCategory === 'mobile' ? 'Mobile Phones' :
+                                               currentCategory === 'tab' ? 'Tablets' :
+                                               currentCategory.toUpperCase();
+        }
+
+        function updateBrandFilters() {
+            brandFiltersContainer.innerHTML = '';
+            const brands = [...new Set(allProductsData
+                .filter(product => currentCategory === 'all' || product.category.toLowerCase() === currentCategory)
+                .map(product => product.brand))].sort();
+
+            const allBrandLink = document.createElement('li');
+            allBrandLink.innerHTML = `<a href="#" class="brand-link block p-2 rounded-md ${currentBrand === 'all' ? 'bg-blue-100 text-blue-800' : 'hover:bg-gray-200'}" data-brand="all">All Brands</a>`;
+            brandFiltersContainer.appendChild(allBrandLink);
+
+            brands.forEach(brand => {
+                const brandLink = document.createElement('li');
+                brandLink.innerHTML = `<a href="#" class="brand-link block p-2 rounded-md ${currentBrand === brand.toLowerCase() ? 'bg-blue-100 text-blue-800' : 'hover:bg-gray-200'}" data-brand="${brand.toLowerCase()}">${brand}</a>`;
+                brandFiltersContainer.appendChild(brandLink);
+            });
+
+            document.querySelectorAll('.brand-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentBrand = e.target.dataset.brand;
+                    filterProducts();
+                    updateBrandFilters();
+                    
+                    if (window.innerWidth < 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+        }
+
+        updateCategoryTitle();
+        updateBrandFilters();
+
+        function openModal(imageSrc) {
+            document.getElementById('imageModal').style.display = 'flex';
+            document.getElementById('modalImage').src = imageSrc;
+        }
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function handleEmiSubmit(event) {
+            event.preventDefault(); 
+            const btn = document.getElementById('emi-submit');
+            btn.disabled = true;
+            btn.innerText = 'Submitting...';
+
+// தேர்ந்தெடுத்த தயாரிப்பு விவரங்களைப் பெறுகிறது
+    const productDetails = document.getElementById('selected_product_details').value;
+
+            const formData = {
+                "සම්පූර්ණ නම முழுப் பெயர்": document.getElementById('name').value,
+                "ස්ථිර ලිපිනය நிரந்தර முகவரி": document.getElementById('perm_address').value,
+                "වර්තමාන ලිපිනය தற்போதைய முகவரி": document.getElementById('curr_address').value,
+                "ජංගම දුරකථන අංකය கைபேசி எண்": document.getElementById('phone').value,
+                "Whatsapp අංකය Whatsapp எண்": document.getElementById('whatsapp_phone').value,
+                "රැකියා ස්ථානයේ නම வேலை செய்யும் இடம்": document.getElementById('work-place').value,
+                "රැකියා ස්ථානයේ ලිපිනය வேலை செய்யும் இடத்தின் முகவரி": document.getElementById('work-address').value,
+                "පවුලේ සාමාජಿಕයෙකුගේ නම குடும்ப உறுப்பினர் ஒருவரின் பெயர்": document.getElementById('ref_name').value,
+                "ඔහුගේ හෝ ඇයගේ දුරකථන අංකය அவரது தொலைபேசி எண்": document.getElementById('ref_phone').value,
+                "Product Details": document.getElementById('selected_product_details').value // Column K க்காக அனுப்பப்படும் தரவு
+            };
+
+            // ⚠️ மாற்றி அமைக்கப்பட்ட சரியான URL (l சேர்க்கப்பட்டுள்ளது)
+            const googleScriptUrl = "https://script.google.com/macros/s/AKfycbyqFBYiJxOepHB751pEiRwSa6UPawo5MfT-g8khVyukWViHcV_tSdwe4xa9w3TUlqhQ/exec";
+
+// CORS பிழையைத் தவிர்க்க எளிய POST முறை:
+    fetch(googleScriptUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" }, // text/plain பயன்படுத்துவது CORS பிழையைத் தவிர்க்கும்
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        // தரவு வெற்றிகரமாகச் சேமிக்கப்பட்டவுடன் இயங்கும் பகுதி
+        let waMessage = "I have submitted my EMI application.";
+        if (productDetails) {
+            waMessage += `\n\nSelected Product: ${productDetails}`;
+        }
+        waMessage += "\n\nHere are my documents:";
+
+        // வாட்ஸ்அப் பட்டனின் லிங்க்கை புதிய செய்தியுடன் மாற்றுதல்
+        const waLink = document.getElementById('waLink');
+        if (waLink) {
+            waLink.href = `https://wa.me/94768046148?text=${encodeURIComponent(waMessage)}`;
+        }
+
+        // தேங்க் யூ பாப்-அப் விண்டோவைத் திறத்தல்
+        const m = document.getElementById('thankYouModal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        
+        // படிவத்தை ரீசெட் செய்தல்
+        document.getElementById('emiForm').reset();
+        document.getElementById('selected-product-alert').classList.add('hidden');
+    })
+    .catch(error => {
+        console.error("Error submitting form:", error);
+        alert("Error saving data! Please check your Google Script URL or network connection.");
+        btn.disabled = false;
+        btn.innerText = 'Submit Application';
+    });
+
+    return false;
+}
+
+// HTML கோப்பில் உள்ள இந்த பழைய செயல்பாட்டை நீக்கிவிட்டு இதை ஒட்டவும்:
+function closeThankYouModal() {
+    const m = document.getElementById('thankYouModal');
+    
+    // பிழை சரிசெய்யப்பட்ட வரி (classList.add என்று மாற்றப்பட்டுள்ளது):
+    m.classList.add('hidden'); 
+    m.classList.remove('flex');
+    
+    // சப்மிட் பொத்தானை மீண்டும் பழைய நிலைக்குக் கொண்டு வருதல்:
+    const btn = document.getElementById('emi-submit');
+    if (btn) {
+        btn.disabled = false;
+        btn.innerText = 'Submit Application';
+    }
+}    </script>
+
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <span class="absolute top-4 right-4 text-white text-4xl cursor-pointer" onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="" alt="Full Screen Image" class="max-w-full max-h-full p-4">
+    </div>
+</body>
+</html>
